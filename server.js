@@ -10,6 +10,8 @@ const io = socketio(http, {
   }
 })
 
+var user = "Vlad"
+
 const allowedIPs = ['192.168.3.6', '192.168.3.5'];
 const corsOptions = {
   /*
@@ -31,6 +33,15 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected', socket.handshake.address);
+  socket.emit('apo', 'message1')
+  socket.on('authForm', userData=>{
+    console.log(userData)
+    if (userData.username === user){
+      socket.emit('authFormServer', true)
+    }else{
+      socket.emit('authFormServer', false)
+    }
+  })
 });
 
 http.listen(3000, () => {
