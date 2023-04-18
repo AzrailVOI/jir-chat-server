@@ -32,8 +32,8 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected', socket.handshake.address);
-  socket.emit('apo', 'message1')
+  console.log('a user connected', socket.handshake.address, socket.id);
+  socket.emit('userID', String(socket.id))
   socket.on('authForm', userData=>{
     console.log(userData)
     if (userData.username === user){
@@ -41,6 +41,14 @@ io.on('connection', (socket) => {
     }else{
       socket.emit('authFormServer', false)
     }
+  })
+  socket.on('user-message', message=>{
+    console.log(message)
+    let answer={
+      id: String(socket.id),
+      text: message
+    }
+    io.emit('some-message', answer)
   })
 });
 
